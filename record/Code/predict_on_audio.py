@@ -36,7 +36,7 @@ import glob
 import subprocess
 from multiprocessing import Process
 
-model = YOLO("../Bird-Song-Detector/Models/Bird Song Detector/weights/best.pt")
+model = YOLO("../../Bird-Song-Detector/Models/Bird Song Detector/weights/best.pt")
 brank = np.zeros((320, 640, 3), dtype=np.uint8)
 _ = model(brank)
 model.to("cuda")
@@ -179,5 +179,6 @@ if __name__ == "__main__":
     #     # run("/home/jetson/Bird-Song-Detector/Data/Audios/AM1_20230511_060000.wav")
     #     # run("/home/jetson/Bird-Song-Detector/Data/Audios/AM1_20230510_073000.wav")
     #     run("/home/jetson/record/AM1_20230511_060000.wav")
+
 
 
