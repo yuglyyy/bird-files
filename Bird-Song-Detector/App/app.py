@@ -121,7 +121,7 @@ def capture_console_output(func, *args, **kwargs):
 def process_audio(audio_path):
     """Processes an uploaded audio file for bird song detection and returns the console output."""
     # Load YOLO model
-    model = YOLO("Models/Bird Song Detector/weights/best.pt")
+    model = YOLO("../Models/Bird Song Detector/weights/best.pt")
     
     # Clean output folder
     shutil.rmtree('runs', ignore_errors=True)
