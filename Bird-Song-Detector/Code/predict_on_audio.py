@@ -33,7 +33,7 @@ import sys
 import time 
 import glob
 
-model = YOLO("/home/jetson/Bird-Song-Detector/Models/Bird Song Detector/weights/best.pt")
+model = YOLO("../Models/Bird Song Detector/weights/best.pt")
 brank = np.zeros((320, 640, 3), dtype=np.uint8)
 _ = model(brank)
 model.to("cuda")
@@ -57,7 +57,7 @@ def extract_segments_and_save_zip_from_txt(audio_path: str, segments_txt_path: s
         return
 
     audio_name = os.path.basename(audio_path).rsplit('.', 1)[0]
-    output_zip_path = output_zip_path or f"/home/jetson/Bird-Song-Detector/runs/detect/predict/{audio_name}_segments.zip"
+    output_zip_path = output_zip_path or f"../runs/detect/predict/{audio_name}_segments.zip"
 
     # Load audio
     y, sr = librosa.load(audio_path, sr=None)
@@ -110,7 +110,7 @@ def run(audio_path):
         model(image_path, save_txt=True, save_conf=True)
     print("Model extraction: ",dtmodel)
     # Read txt in the output folder
-    predictions_txt = f"/home/jetson/Bird-Song-Detector/runs/detect/predict/labels/{audio_name}.txt"
+    predictions_txt = f"../runs/detect/predict/labels/{audio_name}.txt"
 
     if os.path.exists(predictions_txt):
         # Convert to start_second, end_second, class, confidence score:
@@ -121,7 +121,7 @@ def run(audio_path):
         print(f"No detections for {audio_path}")
 
 if __name__ == "__main__":
-    target_dir = "/home/jetson/record/data_temp/Audios"
+    target_dir = "../../record/data_temp/Audios"
     while True:
         files = os.listdir(target_dir)
         if len(files) == 1:
@@ -151,4 +151,5 @@ if __name__ == "__main__":
     else:
         # run("/home/jetson/Bird-Song-Detector/Data/Audios/AM1_20230511_060000.wav")
         # run("/home/jetson/Bird-Song-Detector/Data/Audios/AM1_20230510_073000.wav")
+
         run("/home/jetson/Bird-Song-Detector/Data/Audios/AM1_20230511_090000.wav")
