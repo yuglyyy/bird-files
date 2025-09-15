@@ -152,4 +152,5 @@ if __name__ == "__main__":
         # run("/home/jetson/Bird-Song-Detector/Data/Audios/AM1_20230511_060000.wav")
         # run("/home/jetson/Bird-Song-Detector/Data/Audios/AM1_20230510_073000.wav")
 
-        run("/home/jetson/Bird-Song-Detector/Data/Audios/AM1_20230511_090000.wav")
+        run("../Data/Audios/AM1_20230511_090000.wav")
+
