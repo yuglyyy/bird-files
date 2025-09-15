@@ -31,7 +31,7 @@
 
 conda activate BD
 
-BASE_PATH="/home/FYP/mohor001/Bird-Song-Detector/Code"
+BASE_PATH="../../Bird-Song-Detector/Code"
 
 cd $BASE_PATH
 export PYTHONPATH=${BASE_PATH}
