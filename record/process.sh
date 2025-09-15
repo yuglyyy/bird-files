@@ -2,7 +2,8 @@
 files=($(ls -tr ./data_temp))
 count=${#files[@]}
 for ((i=0; i<count-1; i++)); do
-    data=/home/jetson/record/data_temp/"${files[i]}"
+    data=/data_temp/"${files[i]}"
+    # data=/home/jetson/record/data_temp/"${files[i]}"
     # python3 /home/jetson/Bird-Song-Detector/Code/predict_on_audio.py $data
     rm $data
 done
