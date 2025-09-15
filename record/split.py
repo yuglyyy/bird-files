@@ -1,6 +1,6 @@
 import subprocess
 
-file = "/home/jetson/Bird-Song-Detector/runs/detect/predict/labels/AM1_20230511_060000.txt"
+file = "../Bird-Song-Detector/runs/detect/predict/labels/AM1_20230511_060000.txt"
 command = 'ffmpeg -i {} -af "atrim=start={}:end={}1,asetpts=PTS-STARTPTS" data/output_{}.wav'
 total = 0
 with open(file) as f:
