@@ -24,13 +24,23 @@ while True:
 
         command = [
             "arecord",
-            "--device", "hw:Loopback,1,0",
-            "--rate", "32000",
+            "--device", "plughw:2,0",
+            "--rate", "44100", # sampling rate
             "--format", "S16_LE",
-            "--channels", "1",
+            "--channels", "2",
             "--duration", "60",
             filename
         ]
+        
+        # command = [
+        #     "arecord",
+        #     "--device", "hw:Loopback,1,0",
+        #     "--rate", "32000",
+        #     "--format", "S16_LE",
+        #     "--channels", "1",
+        #     "--duration", "60",
+        #     filename
+        # ]
 
         # command = [
         #     "arecord",
