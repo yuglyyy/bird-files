@@ -2,6 +2,9 @@ import subprocess
 from datetime import datetime
 import time  # Add this to control the loop timing
 from multiprocessing import Process
+import os
+
+arecord_device = os.getenv("ARECORD_DEVICE", "plughw:2,0")
 
 def upload():
     subprocess.run(["bash", "upload.sh"])
@@ -24,7 +27,7 @@ while True:
 
         command = [
             "arecord",
-            "--device", "plughw:2,0",
+            "--device", arecord_device,
             "--rate", "44100", # sampling rate
             "--format", "S16_LE",
             "--channels", "2",
