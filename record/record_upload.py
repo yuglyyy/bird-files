@@ -22,6 +22,16 @@ while True:
         timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         filename = f"data_temp/Audios/{timestamp}.wav"
 
+        command = [
+            "arecord",
+            "--device", "plughw:2,0",
+            "--rate", "44100", # sampling rate
+            "--format", "S16_LE",
+            "--channels", "2",
+            "--duration", "60",
+            filename
+        ]
+        
         # command = [
         #     "arecord",
         #     "--device", "hw:Loopback,1,0",
@@ -32,15 +42,15 @@ while True:
         #     filename
         # ]
 
-        command = [
-            "arecord",
-            "--device", "hw:Loopback,1,0",
-            "--rate", "44100", # sampling rate
-            "--format", "S16_LE",
-            "--channels", "2",
-            "--duration", "60",
-            filename
-        ]
+        # command = [
+        #     "arecord",
+        #     "--device", "hw:Loopback,1,0",
+        #     "--rate", "44100", # sampling rate
+        #     "--format", "S16_LE",
+        #     "--channels", "2",
+        #     "--duration", "60",
+        #     filename
+        # ]
 
         # command = [
         #    "arecord",
