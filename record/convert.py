@@ -4,7 +4,7 @@ import time  # Add this to control the loop timing
 from multiprocessing import Process
 import os
 
-arecord_device = os.getenv("ARECORD_DEVICE", "plughw:1,0")
+arecord_device = os.getenv("ARECORD_DEVICE", "plughw:2,0")
 
 def upload():
     subprocess.run(["bash", "upload.sh"])
