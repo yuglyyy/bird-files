@@ -132,8 +132,8 @@ def move_file(filename):
     subprocess.run(["bash", "convert.sh", filename, filename_new])
 
 if __name__ == "__main__":
-    target_dir = "opt/bird-files/record/data_temp/Audios"
-    result_dir = "opt/bird-files/record/data_temp/Segments/"
+    target_dir = "/opt/bird-files/record/data_temp/Audios"
+    result_dir = "/opt/bird-files/record/data_temp/Segments/"
 
     count = 10
     while True:
@@ -179,6 +179,7 @@ if __name__ == "__main__":
     #     # run("/home/jetson/Bird-Song-Detector/Data/Audios/AM1_20230511_060000.wav")
     #     # run("/home/jetson/Bird-Song-Detector/Data/Audios/AM1_20230510_073000.wav")
     #     run("/home/jetson/record/AM1_20230511_060000.wav")
+
 
 
 
