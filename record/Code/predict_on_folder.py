@@ -35,7 +35,7 @@ import shutil
 shutil.rmtree('runs', ignore_errors=True)
 
 # Path to the folder containing audio files
-audio_folder = "opt/bird-files/Bird-Song-Detector/Data/Audios/"
+audio_folder = "/opt/bird-files/record/data_temp/Audios/"
 
 # Iterate over all audio files in the folder
 for audio_file in os.listdir(audio_folder):
@@ -58,5 +58,6 @@ for audio_file in os.listdir(audio_folder):
             transform_predictions_save_segment(audio_path, predictions_txt)
         else:
             print(f"No detections for {audio_file}")
+
 
 
