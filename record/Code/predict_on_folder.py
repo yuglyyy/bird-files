@@ -27,7 +27,7 @@ import pandas as pd
 from audio_processing import save_spectrogram_from_audio, transform_coordinates_to_seconds, transform_predictions_save_segment
 
 # Load model (Bird Song Detector from BIRDeep)
-model = YOLO("../../Bird-Song-Detector/Models/Bird Song Detector/weights/best.pt")
+model = YOLO("/opt/bird-files/Bird-Song-Detector/Models/Bird Song Detector/weights/best.pt")
 # Clean the output folder
 import shutil
 
@@ -35,7 +35,7 @@ import shutil
 shutil.rmtree('runs', ignore_errors=True)
 
 # Path to the folder containing audio files
-audio_folder = "../../Bird-Song-Detector/Data/Audios/"
+audio_folder = "opt/bird-files/Bird-Song-Detector/Data/Audios/"
 
 # Iterate over all audio files in the folder
 for audio_file in os.listdir(audio_folder):
@@ -51,11 +51,12 @@ for audio_file in os.listdir(audio_folder):
         model(image_path, save_txt=True, save_conf=True)
         
         # Read txt in the output folder
-        predictions_txt = f"../../Bird-Song-Detector/Code/runs/detect/predict/labels/{audio_name}.txt"
+        predictions_txt = f"opt/bird-files/Bird-Song-Detector/Code/runs/detect/predict/labels/{audio_name}.txt"
         
         if os.path.exists(predictions_txt):
             # Convert to start_second, end_second, class, confidence score:
             transform_predictions_save_segment(audio_path, predictions_txt)
         else:
             print(f"No detections for {audio_file}")
+
 
