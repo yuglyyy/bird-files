@@ -27,7 +27,7 @@ import pandas as pd
 from audio_processing import save_spectrogram_from_audio, transform_coordinates_to_seconds, transform_predictions_save_segment
 
 # Load model (Bird Song Detector from BIRDeep)
-model = YOLO("/opt/bird-files/Bird-Song-Detector/Models/Bird Song Detector/weights/best.pt")
+model = YOLO("/opt/bird-files/Bird-Song-Detector/Models/Bird_Song_Detector/weights/best.pt")
 # Clean the output folder
 import shutil
 

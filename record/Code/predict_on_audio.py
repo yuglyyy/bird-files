@@ -36,7 +36,7 @@ import glob
 import subprocess
 from multiprocessing import Process
 
-model = YOLO("/opt/bird-files/Bird-Song-Detector/Models/Bird Song Detector/weights/best.pt")
+model = YOLO("/opt/bird-files/Bird-Song-Detector/Models/Bird_Song_Detector/weights/best.pt")
 brank = np.zeros((320, 640, 3), dtype=np.uint8)
 _ = model(brank)
 model.to("cuda")
