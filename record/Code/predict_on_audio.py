@@ -125,7 +125,7 @@ def run(audio_path):
         print(f"No detections for {audio_path}")
 
 def upload():
-    subprocess.run(["bash", "./upload.sh"])
+    subprocess.run(["bash", "/opt/bird-files/record/upload.sh"])
 
 def move_file(filename):
     filename_new = filename.replace("_temp", "").replace("Segments/", "").replace("wav", "flac")
@@ -180,6 +180,7 @@ if __name__ == "__main__":
     #     # run("/home/jetson/Bird-Song-Detector/Data/Audios/AM1_20230511_060000.wav")
     #     # run("/home/jetson/Bird-Song-Detector/Data/Audios/AM1_20230510_073000.wav")
     #     run("/home/jetson/record/AM1_20230511_060000.wav")
+
 
 
 
