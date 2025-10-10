@@ -38,9 +38,10 @@ from multiprocessing import Process
 
 model = YOLO("/opt/bird-files/Bird-Song-Detector/Models/Bird_Song_Detector/weights/best.pt")
 brank = np.zeros((320, 640, 3), dtype=np.uint8)
-_ = model(brank)
-model.to("cuda")
-print("Model device:", next(model.model.parameters()).device)
+_ = model(brank, device="cpu")
+# model.to("cuda") # pi has no gpu!!
+# print("Model device:", next(model.model.parameters()).device)
+print("Model device: CPU")
 
 def extract_segments_and_save_zip_from_txt(audio_path: str, segments_txt_path: str, output_zip_path: str = None):
     """
@@ -179,6 +180,7 @@ if __name__ == "__main__":
     #     # run("/home/jetson/Bird-Song-Detector/Data/Audios/AM1_20230511_060000.wav")
     #     # run("/home/jetson/Bird-Song-Detector/Data/Audios/AM1_20230510_073000.wav")
     #     run("/home/jetson/record/AM1_20230511_060000.wav")
+
 
 
 
