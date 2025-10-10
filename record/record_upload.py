@@ -23,7 +23,7 @@ minutes = 30
 while True:
     for i in range(minutes):
         timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        filename = f"data_temp/Audios/{timestamp}.wav"
+        filename = f"/opt/bird-files/record/data_temp/Audios/{timestamp}.wav"
 
         command = [
             "arecord",
