@@ -130,7 +130,7 @@ def upload():
 def move_file(filename):
     filename_new = filename.replace("_temp", "").replace("Segments/", "").replace("wav", "flac")
     print(filename, filename_new)
-    subprocess.run(["bash", "convert.sh", filename, filename_new])
+    subprocess.run(["bash", "/opt/bird-files/record/convert.sh", filename, filename_new])
 
 if __name__ == "__main__":
     target_dir = "/opt/bird-files/record/data_temp/Audios"
@@ -180,6 +180,7 @@ if __name__ == "__main__":
     #     # run("/home/jetson/Bird-Song-Detector/Data/Audios/AM1_20230511_060000.wav")
     #     # run("/home/jetson/Bird-Song-Detector/Data/Audios/AM1_20230510_073000.wav")
     #     run("/home/jetson/record/AM1_20230511_060000.wav")
+
 
 
 
