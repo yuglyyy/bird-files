@@ -61,7 +61,7 @@ def extract_segments_and_save_zip_from_txt(audio_path: str, segments_txt_path: s
         return
 
     audio_name = os.path.basename(audio_path).rsplit('.', 1)[0]
-    output_zip_path = output_zip_path or f"./runs/detect/predict/{audio_name}_segments.zip"
+    output_zip_path = output_zip_path or f"/opt/bird-files/record/Code/runs/detect/predict/{audio_name}_segments.zip"
 
     # Load audio
     y, sr = librosa.load(audio_path, sr=None)
@@ -114,7 +114,7 @@ def run(audio_path):
         model(image_path, save_txt=True, save_conf=True)
     print("Model extraction: ",dtmodel)
     # Read txt in the output folder
-    predictions_txt = f"./runs/detect/predict/labels/{audio_name}.txt"
+    predictions_txt = f"/opt/bird-files/record/Code/runs/detect/predict/labels/{audio_name}.txt"
 
     if os.path.exists(predictions_txt):
         # Convert to start_second, end_second, class, confidence score:
