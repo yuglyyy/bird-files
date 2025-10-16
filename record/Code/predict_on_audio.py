@@ -32,6 +32,7 @@ import tempfile
 import sys
 import time 
 import glob
+from pathlib import Path
 
 import subprocess
 from multiprocessing import Process
@@ -130,10 +131,43 @@ def run(audio_path):
 def upload_to_s3(target_dir):
     subprocess.run(["python", "upload_to_s3.py", "--dir", target_dir, "--delete"], check=False)
 
-def move_file(filename):
-    filename_new = filename.replace("_temp", "").replace("Segments/", "").replace("wav", "flac")
-    print(filename, filename_new)
-    subprocess.run(["bash", "/opt/bird-files/record/convert.sh", filename, filename_new])
+DATA_ROOT = Path("/opt/bird-files/record")
+SEGMENTS_DIR = DATA_ROOT / "data_temp" / "Segments"
+DEST_DIR = DATA_ROOT / "data"
+
+def move_file(src_path: str):
+    src = Path(src_path)
+
+    if not src.exists():
+        print(f"[WARN] Source missing: {src}")
+        return
+    if SEGMENTS_DIR not in src.parents:
+        print(f"[WARN] Unexpected location for: {src}")
+
+    # Build destination filename:
+    # - drop trailing "_temp" in the stem if present
+    # - change extension to .flac
+    stem = src.stem
+    if stem.endswith("_temp"):
+        stem = stem[:-5]
+    dest_name = stem + ".flac"
+
+    # Place in /opt/bird-files/record/data/
+    dest = DEST_DIR / dest_name
+    dest.parent.mkdir(parents=True, exist_ok=True)
+
+    # Convert to a temp output, then atomically rename to final dest
+    tmp_out = dest.with_suffix(dest.suffix + ".tmp")
+
+    # Run converter; convert.sh removes input only if ffmpeg succeeds
+    subprocess.run(
+        ["bash", "/opt/bird-files/record/convert.sh", str(src), str(tmp_out)],
+        check=True,
+    )
+
+    # Atomic finalize
+    tmp_out.rename(dest)
+    print(f"[OK] Converted {src} → {dest}")
 
 if __name__ == "__main__":
     target_dir = "/opt/bird-files/record/data_temp/Audios"
@@ -162,7 +196,7 @@ if __name__ == "__main__":
             delete_files = glob.glob(file.replace(".wav", "*"))
             for delete_file in delete_files:
                 os.remove(delete_file)
-            tmp=file.replace("Audios", "Images").replace("wav","PNG")
+            # tmp=file.replace("Audios", "Images").replace("wav","PNG")
             os.remove(file.replace("Audios", "Images").replace("wav","PNG"))
             print("Process finished of", file)
             count += 1
