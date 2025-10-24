@@ -1,3 +1,4 @@
+# docker-compose.local.yml
 services:
   birds:
     devices: [] # no ALSA on laptops/CI

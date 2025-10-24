@@ -1,9 +1,10 @@
 services:
   birds:
-    # give the container access to the sound device on Pi
     devices:
       - /dev/snd:/dev/snd
+    group_add:
+      - audio
     environment:
+      ARECORD_DEVICE: plug:mic_in # use the PCM we just defined
+      FORCE_ARECORD_DEVICE: "1"
       RECORD_CMD: python -u record/record_upload.py
-      # if Pi is only recording+uploading, you can disable predictor:
-      # PREDICT_CMD: "true"

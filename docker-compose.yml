@@ -1,11 +1,13 @@
+# docker-compose.yml
 services:
   birds:
     build: .
     image: yuglyyy/bird-files:latest
-    container_name: birds
+    container_name: new-birds
     restart: unless-stopped
     env_file:
       - .env
+    working_dir: /opt/bird-files
     volumes:
       - .:/opt/bird-files
       - ./data/recordings:/opt/bird-files/record/recordings
@@ -18,4 +20,18 @@ services:
       MOCK_OUT_DIR: /opt/bird-files/record/data_temp/Audios
       MOCK_DURATION: "5"
       PYTHONPATH: /opt/bird-files
-    command: bash -lc 'exec /usr/local/bin/run-birds.sh'
+      ARECORD_DEVICE: plug:mic_in
+      FORCE_ARECORD_DEVICE: "1"
+    command: bash -lc 'printf "%s\n"
+      "pcm.mic_in {"
+      "  type dsnoop"
+      "  ipc_key 1024"
+      "  slave { pcm \"hw:2,0\" channels 2 }"
+      "  bindings.0 0"
+      "  bindings.1 1"
+      "}"
+      "ctl.mic_in { type hw; card 2; }"
+      > /etc/asound.conf;
+      echo "[asound] defined dsnoop pcm=mic_in on hw:2,0";
+      arecord -L | grep mic_in || true;
+      exec /usr/local/bin/run-birds.sh'
