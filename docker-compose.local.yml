@@ -1,0 +1,7 @@
+services:
+  birds:
+    devices: [] # no ALSA on laptops/CI
+    environment:
+      RECORD_CMD: python -u record/dev/mock_record.py
+      # optionally disable predictor on laptop:
+      # PREDICT_CMD: "true"

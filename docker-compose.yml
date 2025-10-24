@@ -1,0 +1,21 @@
+services:
+  birds:
+    build: .
+    image: yuglyyy/bird-files:latest
+    container_name: birds
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - .:/opt/bird-files
+      - ./data/recordings:/opt/bird-files/record/recordings
+      - ./data/data_temp_Audios:/opt/bird-files/record/data_temp/Audios
+      - ./data/data_temp_Segments:/opt/bird-files/record/data_temp/Segments
+    environment:
+      # sensible defaults (can be overridden by overrides or .env)
+      RECORD_CMD: python -u record/record_upload.py
+      PREDICT_CMD: python -u record/Code/predict_on_audio.py
+      MOCK_OUT_DIR: /opt/bird-files/record/data_temp/Audios
+      MOCK_DURATION: "5"
+      PYTHONPATH: /opt/bird-files
+    command: bash -lc 'exec /usr/local/bin/run-birds.sh'

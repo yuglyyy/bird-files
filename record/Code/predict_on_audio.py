@@ -37,6 +37,8 @@ from pathlib import Path
 import subprocess
 from multiprocessing import Process
 
+from record.upload_to_s3 import should_upload_by_hash, s3_upload
+
 model = YOLO("/opt/bird-files/Bird-Song-Detector/Models/Bird_Song_Detector/weights/best.pt")
 brank = np.zeros((320, 640, 3), dtype=np.uint8)
 _ = model(brank, device="cpu")
@@ -96,40 +98,83 @@ def extract_segments_and_save_zip_from_txt(audio_path: str, segments_txt_path: s
 
     print(f"Extracted {len(wav_paths)} segments and saved to: {output_zip_path}")
 
-def run(audio_path):
-    # Load model (Bird Song Detector from BIRDeep)
+# def run(audio_path):
+#     # Load model (Bird Song Detector from BIRDeep)
     
-    # Clean the output folder
+#     # Clean the output folder
+#     import shutil
+
+#     # Clean the output folder
+#     shutil.rmtree('runs', ignore_errors=True)
+
+#     audio_name = os.path.basename(audio_path).replace(".wav", "")
+#     # Audio has to be converted to spectrogram and saved as image
+#     with Profile() as dt:
+#         image_path = save_spectrogram_from_audio(audio_path)
+#     print("Spectrogram extraction: ",dt)
+
+#     with Profile() as dtmodel:
+#         model(image_path, save_txt=True, save_conf=True)
+#     print("Model extraction: ",dtmodel)
+#     # Read txt in the output folder
+#     predictions_txt = f"/opt/bird-files/record/Code/runs/detect/predict/labels/{audio_name}.txt"
+
+#     if os.path.exists(predictions_txt):
+#         # Convert to start_second, end_second, class, confidence score:
+#         transform_predictions_save_segment(audio_path, predictions_txt)
+#         extract_segments_and_save_zip_from_txt(audio_path, predictions_txt)
+
+#     else:
+#         print(f"No detections for {audio_path}")
+def run(audio_path):
     import shutil
 
-    # Clean the output folder
+    # Clean the output folder for a fresh run
     shutil.rmtree('runs', ignore_errors=True)
 
     audio_name = os.path.basename(audio_path).replace(".wav", "")
-    # Audio has to be converted to spectrogram and saved as image
+    # 1) Spectrogram
     with Profile() as dt:
         image_path = save_spectrogram_from_audio(audio_path)
-    print("Spectrogram extraction: ",dt)
+    print("Spectrogram extraction: ", dt)
 
+    # 2) YOLO inference
     with Profile() as dtmodel:
         model(image_path, save_txt=True, save_conf=True)
-    print("Model extraction: ",dtmodel)
-    # Read txt in the output folder
-    predictions_txt = f"/opt/bird-files/record/Code/runs/detect/predict/labels/{audio_name}.txt"
+    print("Model extraction: ", dtmodel)
 
+    # 3) Predictions path
+    predictions_txt = f"/opt/bird-files/Bird-Song-Detector/runs/detect/predict/labels/{audio_name}.txt"
+
+    segments_zip_path = None
     if os.path.exists(predictions_txt):
-        # Convert to start_second, end_second, class, confidence score:
+        # 4) Transform to time segments & make a zip of extracted wav segments
         transform_predictions_save_segment(audio_path, predictions_txt)
         extract_segments_and_save_zip_from_txt(audio_path, predictions_txt)
-
+        segments_zip_path = f"/opt/bird-files/Bird-Song-Detector/runs/detect/predict/{audio_name}_segments.zip"
     else:
         print(f"No detections for {audio_path}")
+
+    # 5) Sample ~1 in 10 files for upload (deterministic) change in the future
+    if should_upload_by_hash(audio_path, rate=int(os.getenv("UPLOAD_RATE", "2")),
+                             salt=os.getenv("UPLOAD_SALT", "")):
+        # Upload original wav
+        s3_key_wav = f"{audio_name}.wav"
+        s3_upload(audio_path, s3_key_wav, content_type="audio/wav")
+        print(f"S3 UPLOADED: {audio_path}")
+        # Upload segments zip if we produced one
+        if segments_zip_path and os.path.exists(segments_zip_path):
+            s3_key_zip = f"segments/{audio_name}_segments.zip"
+            s3_upload(segments_zip_path, s3_key_zip, content_type="application/zip")
+    else:
+        print(f"[s3] Skipped upload for {audio_name}.wav (did not pass sampler)")
+
 
 # def upload():
 #     subprocess.run(["bash", "/opt/bird-files/record/upload.sh"])
 
 def upload_to_s3(target_dir):
-    subprocess.run(["python", "upload_to_s3.py", "--dir", target_dir, "--delete"], check=False)
+    subprocess.run(["python", "record/upload_to_s3.py", "--dir", target_dir, "--delete"], check=False)
 
 DATA_ROOT = Path("/opt/bird-files/record")
 SEGMENTS_DIR = DATA_ROOT / "data_temp" / "Segments"
@@ -217,12 +262,4 @@ if __name__ == "__main__":
     #     # run("/home/jetson/Bird-Song-Detector/Data/Audios/AM1_20230511_060000.wav")
     #     # run("/home/jetson/Bird-Song-Detector/Data/Audios/AM1_20230510_073000.wav")
     #     run("/home/jetson/record/AM1_20230511_060000.wav")
-
-
-
-
-
-
-
-
 

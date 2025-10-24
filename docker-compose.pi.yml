@@ -1,0 +1,9 @@
+services:
+  birds:
+    # give the container access to the sound device on Pi
+    devices:
+      - /dev/snd:/dev/snd
+    environment:
+      RECORD_CMD: python -u record/record_upload.py
+      # if Pi is only recording+uploading, you can disable predictor:
+      # PREDICT_CMD: "true"
