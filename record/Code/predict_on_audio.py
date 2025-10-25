@@ -161,7 +161,7 @@ def run(audio_path):
 
         # Prepare paths
         audio_name = os.path.splitext(os.path.basename(audio_path))[0]
-        tmp_flac_path = f"/opt/bird-files/data/tmp/{audio_name}.flac"
+        tmp_flac_path = f"/opt/bird-files/record/tmp/{audio_name}.flac"
 
         # Convert from .wav to .flac
         try:
