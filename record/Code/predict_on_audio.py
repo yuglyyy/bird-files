@@ -157,15 +157,39 @@ def run(audio_path):
 
     # 5) Sample ~1 in 10 files for upload (deterministic) change in the future
     if should_upload_by_hash(audio_path, rate=int(os.getenv("UPLOAD_RATE", "2")),
-                             salt=os.getenv("UPLOAD_SALT", "")):
-        # Upload original wav
-        s3_key_wav = f"{audio_name}.wav"
-        s3_upload(audio_path, s3_key_wav, content_type="audio/wav")
-        print(f"S3 UPLOADED: {audio_path}")
-        # Upload segments zip if we produced one
+                            salt=os.getenv("UPLOAD_SALT", "")):
+
+        # Prepare paths
+        audio_name = os.path.splitext(os.path.basename(audio_path))[0]
+        tmp_flac_path = f"/opt/bird-files/data/tmp/{audio_name}.flac"
+
+        # Convert from .wav to .flac
+        try:
+            subprocess.run(
+                ["bash", "/opt/bird-files/record/convert.sh", str(audio_path), str(tmp_flac_path)],
+                check=True,
+            )
+            print(f"[convert] Converted {audio_path} → {tmp_flac_path}")
+        except subprocess.CalledProcessError as e:
+            print(f"[convert] Conversion failed for {audio_path}: {e}")
+            tmp_flac_path = None
+
+        # Upload converted FLAC if conversion succeeded
+        if tmp_flac_path and os.path.exists(tmp_flac_path):
+            s3_key_flac = f"{audio_name}.flac"
+            s3_upload(tmp_flac_path, s3_key_flac, content_type="audio/flac")
+            print(f"S3 UPLOADED: {tmp_flac_path}")
+            try:
+                os.remove(tmp_flac_path)
+                print(f"[cleanup] Deleted temporary file {tmp_flac_path}")
+            except OSError as e:
+                print(f"[cleanup] Failed to delete {tmp_flac_path}: {e}")
+
+        # Upload segments zip if it exists
         if segments_zip_path and os.path.exists(segments_zip_path):
             s3_key_zip = f"segments/{audio_name}_segments.zip"
             s3_upload(segments_zip_path, s3_key_zip, content_type="application/zip")
+
     else:
         print(f"[s3] Skipped upload for {audio_name}.wav (did not pass sampler)")
 

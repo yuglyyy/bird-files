@@ -6,19 +6,6 @@ import os
 
 arecord_device = os.getenv("ARECORD_DEVICE", "plughw:2,0")
 
-def upload():
-    subprocess.run(["bash", "upload.sh"])
-
-def upload_file(filename):
-    subprocess.run(["bash", "upload_file.sh", filename])
-
-def move_file(filename):
-    filename_new = filename.replace("_temp", "").replace("wav", "flac")
-    print(filename, filename_new)
-    subprocess.run(["bash", "convert.sh", filename, filename_new])
-    # filename_new = filename.replace("_temp", "")
-    # subprocess.run(["mv", filename, filename_new])
-
 minutes = 30
 while True:
     for i in range(minutes):
