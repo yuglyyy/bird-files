@@ -50,7 +50,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
       boto3
 
 # repo
-ARG REPO_URL="https://github.com/maegicakes/bird-files.git"
+ARG REPO_URL="https://github.com/yuglyyy/bird-files.git"
 ARG REPO_REF="main"
 RUN git clone --depth=1 -b "$REPO_REF" "$REPO_URL" /opt/bird-files
 
