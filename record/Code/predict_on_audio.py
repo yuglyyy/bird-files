@@ -37,8 +37,6 @@ from pathlib import Path
 import subprocess
 from multiprocessing import Process
 
-from record.upload_to_s3 import should_upload_by_hash, s3_upload
-
 model = YOLO("/opt/bird-files/Bird-Song-Detector/Models/Bird_Song_Detector/weights/best.pt")
 brank = np.zeros((320, 640, 3), dtype=np.uint8)
 _ = model(brank, device="cpu")
@@ -159,7 +157,7 @@ def run(audio_path):
 #     subprocess.run(["bash", "/opt/bird-files/record/upload.sh"])
 
 def upload_to_s3(target_dir):
-    subprocess.run(["python", "record/upload_to_s3.py", "--dir", target_dir, "--delete"], check=False)
+    subprocess.run(["python", "/opt/bird-files/record/upload_to_s3.py", "--dir", target_dir, "--delete"], check=False)
 
 DATA_ROOT = Path("/opt/bird-files/record")
 SEGMENTS_DIR = DATA_ROOT / "data_temp" / "Segments"
